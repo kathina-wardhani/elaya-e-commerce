@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { MegaMenu } from "./MegaMenu";
 
@@ -11,7 +11,7 @@ const navItems = [
 
 export const Header = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 bg-background">
@@ -29,7 +29,7 @@ export const Header = () => {
             />
             <Search className="h-4 w-4 text-muted-foreground" />
           </div>
-          <button className="sm:hidden" onClick={() => setSearchOpen(!searchOpen)}>
+          <button className="sm:hidden">
             <Search className="h-5 w-5 text-foreground" />
           </button>
         </div>
@@ -44,10 +44,14 @@ export const Header = () => {
               className={`font-body text-sm font-medium tracking-widest transition-colors hover:text-foreground ${
                 activeMenu === item.key ? "text-foreground font-semibold" : "text-muted-foreground"
               }`}
-              onMouseEnter={() => item.key !== "brands" && setActiveMenu(item.key)}
+              onMouseEnter={() => {
+                if (item.key !== "brands") setActiveMenu(item.key);
+                else setActiveMenu(null);
+              }}
               onClick={() => {
                 if (item.key === "brands") {
                   setActiveMenu(null);
+                  navigate("/category/brands");
                 } else {
                   setActiveMenu(activeMenu === item.key ? null : item.key);
                 }
