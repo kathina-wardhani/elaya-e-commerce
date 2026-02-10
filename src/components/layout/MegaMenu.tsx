@@ -32,7 +32,7 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
             {categories.map((cat) => (
               <Link
                 key={cat.name}
-                to={`/category/${gender}/${cat.name.toLowerCase().replace(/ /g, "-")}`}
+                to={`/category/${gender}/${cat.slug}`}
                 className={`block font-body text-sm tracking-wider transition-colors hover:text-foreground ${
                   hoveredCategory === cat.name
                     ? "bg-foreground text-background px-3 py-1 -mx-3"
@@ -51,12 +51,12 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
             <div className="border-l border-border pl-8 space-y-3">
               {hovered.subcategories.map((sub) => (
                 <Link
-                  key={sub}
-                  to={`/category/${gender}/${sub.toLowerCase().replace(/ /g, "-")}`}
+                  key={sub.slug}
+                  to={`/category/${gender}/${sub.slug}`}
                   className="block font-body text-sm text-muted-foreground tracking-wider hover:text-foreground transition-colors"
                   onClick={onClose}
                 >
-                  {sub.toUpperCase()}
+                  {sub.name.toUpperCase()}
                 </Link>
               ))}
             </div>

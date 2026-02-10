@@ -7,9 +7,9 @@ import brandStory3 from "@/assets/brand-story-3.jpg";
 import brandStory4 from "@/assets/brand-story-4.jpg";
 
 const brands = [
-  { id: "1", name: "GIFTED MOMENTS", image: brandStory1, slug: "gifted-moments" },
-  { id: "2", name: "MAKE WAVES NOT RULES", image: brandStory2, slug: "make-waves-not-rules" },
-  { id: "3", name: "OIAL", image: brandStory3, slug: "oial" },
+  { id: "1", name: "BIYAN", image: brandStory1, slug: "biyan" },
+  { id: "2", name: "SEJAUH MATA MEMANDANG", image: brandStory2, slug: "sejauh-mata-memandang" },
+  { id: "3", name: "TULOLA", image: brandStory3, slug: "tulola" },
   { id: "4", name: "AERO SPORT CLUB", image: brandStory4, slug: "aero-sport-club" },
 ];
 
