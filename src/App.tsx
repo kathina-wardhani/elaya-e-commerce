@@ -10,6 +10,10 @@ import BrandsListing from "./pages/BrandsListing";
 import GenderListing from "./pages/GenderListing";
 import SearchPage from "./pages/SearchPage";
 import CollectionPage from "./pages/CollectionPage";
+import OurStory from "./pages/OurStory";
+import OurMission from "./pages/OurMission";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +44,11 @@ const App = () => (
           <Route path="/search" element={<SearchPage />} />
           {/* Collections */}
           <Route path="/collection/:slug" element={<CollectionPage />} />
+          {/* Static pages */}
+          <Route path="/our-story" element={<OurStory />} />
+          <Route path="/our-mission" element={<OurMission />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           {/* Legacy routes */}
           <Route path="/category/:slug" element={<GenderListing />} />
           <Route path="/category/:gender/:slug" element={<GenderListing />} />
