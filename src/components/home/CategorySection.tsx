@@ -21,7 +21,7 @@ export const CategorySection = ({ title, slug }: CategorySectionProps) => {
             {title}
           </h2>
           <Link
-            to={`/category/${slug}`}
+            to={`/women/${slug}`}
             className="flex items-center gap-1 bg-primary px-5 py-2.5 font-body text-xs font-medium tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
           >
             View All
