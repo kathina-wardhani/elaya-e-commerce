@@ -1,6 +1,30 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Instagram, Facebook, Mail } from "lucide-react";
 
 export const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "success" | "duplicate" | "error" | "invalid">("idle");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setSubscribeStatus("invalid");
+      return;
+    }
+    // Store in localStorage until Supabase is connected
+    const subscribers = JSON.parse(localStorage.getItem("elaya_subscribers") || "[]");
+    if (subscribers.includes(trimmed)) {
+      setSubscribeStatus("duplicate");
+      return;
+    }
+    subscribers.push(trimmed);
+    localStorage.setItem("elaya_subscribers", JSON.stringify(subscribers));
+    setSubscribeStatus("success");
+    setEmail("");
+  };
+
   return (
     <footer className="bg-footer text-footer-foreground">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-12">
@@ -11,24 +35,36 @@ export const Footer = () => {
             <p className="font-body text-sm leading-relaxed opacity-70 mb-6">
               Subscribe to discover new Indonesian brands and curated collections.
             </p>
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="mb-3 w-full border border-footer-foreground/20 bg-transparent px-4 py-3 font-body text-sm text-footer-foreground placeholder:text-footer-foreground/40 outline-none"
-            />
-            <button className="w-full border border-footer-foreground/40 bg-transparent px-4 py-3 font-body text-xs font-medium tracking-widest text-footer-foreground transition-colors hover:bg-footer-foreground/10">
-              SUBSCRIBE
-            </button>
+            <form onSubmit={handleSubscribe}>
+              <input
+                type="email"
+                placeholder="Your email address"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setSubscribeStatus("idle"); }}
+                className="mb-3 w-full border border-footer-foreground/20 bg-transparent px-4 py-3 font-body text-sm text-footer-foreground placeholder:text-footer-foreground/40 outline-none"
+              />
+              <button type="submit" className="w-full border border-footer-foreground/40 bg-transparent px-4 py-3 font-body text-xs font-medium tracking-widest text-footer-foreground transition-colors hover:bg-footer-foreground/10">
+                SUBSCRIBE
+              </button>
+            </form>
+            {subscribeStatus === "success" && (
+              <p className="mt-2 font-body text-xs text-accent-foreground">Thank you for subscribing!</p>
+            )}
+            {subscribeStatus === "duplicate" && (
+              <p className="mt-2 font-body text-xs text-muted-foreground">You're already subscribed.</p>
+            )}
+            {subscribeStatus === "invalid" && (
+              <p className="mt-2 font-body text-xs text-destructive">Please enter a valid email address.</p>
+            )}
           </div>
 
           {/* Discover */}
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Discover</h4>
             <div className="space-y-2 font-body text-sm opacity-70">
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">New Arrivals</p>
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">Women</p>
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">Men</p>
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">All Brands</p>
+              <Link to="/women" className="block hover:opacity-100 transition-opacity">Women</Link>
+              <Link to="/men" className="block hover:opacity-100 transition-opacity">Men</Link>
+              <Link to="/brands" className="block hover:opacity-100 transition-opacity">All Brands</Link>
             </div>
           </div>
 
@@ -36,10 +72,10 @@ export const Footer = () => {
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Information</h4>
             <div className="space-y-2 font-body text-sm opacity-70">
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">Our Story</p>
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">Our Mission</p>
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">Terms of Service</p>
-              <p className="cursor-pointer hover:opacity-100 transition-opacity">Privacy Policy</p>
+              <Link to="/our-story" className="block hover:opacity-100 transition-opacity">Our Story</Link>
+              <Link to="/our-mission" className="block hover:opacity-100 transition-opacity">Our Mission</Link>
+              <Link to="/terms" className="block hover:opacity-100 transition-opacity">Terms of Service</Link>
+              <Link to="/privacy" className="block hover:opacity-100 transition-opacity">Privacy Policy</Link>
             </div>
           </div>
 

@@ -424,7 +424,7 @@ export const editorialCollections: EditorialCollection[] = [
 
 export const brandStories = brands;
 
-export const categoryTabs = ["Featured Products", "Trending Now", "New Arrivals"];
+export const categoryTabs = ["Featured Products", "Trending Now"];
 
 export const allCategories: { name: string; slug: string; gender: "women" | "men" }[] = [
   ...megaMenuCategories.women.map((c) => ({ name: c.name, slug: c.slug, gender: "women" as const })),
