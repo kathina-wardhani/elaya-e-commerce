@@ -54,7 +54,7 @@ export const BrandStories = () => {
             {brands.map((brand) => (
               <Link
                 key={brand.id}
-                to={`/brand/${brand.slug}`}
+                to={`/brands/${brand.slug}`}
                 className="group relative aspect-square w-[280px] flex-shrink-0 overflow-hidden sm:w-[300px]"
               >
                 <img
