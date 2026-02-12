@@ -2,7 +2,9 @@ import { useParams, useLocation, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProductCard } from "@/components/ProductCard";
-import { filterProducts, getCategoryName, megaMenuCategories } from "@/data/mock";
+import { useProductsByGenderCategory, useCategories } from "@/hooks/use-supabase-data";
+import { Skeleton } from "@/components/ui/skeleton";
+import { megaMenuCategories } from "@/data/mock";
 
 const GenderListing = () => {
   const { category, subcategory } = useParams<{
@@ -11,16 +13,30 @@ const GenderListing = () => {
   }>();
   const location = useLocation();
 
-  // Extract gender from the path
   const pathGender = location.pathname.startsWith("/women")
     ? "women"
     : location.pathname.startsWith("/men")
     ? "men"
     : undefined;
 
-  const products = filterProducts(pathGender, category, subcategory);
+  const { data: products, isLoading } = useProductsByGenderCategory(pathGender, category, subcategory);
 
-  // Build breadcrumb
+  // Use static mega menu data for sidebar navigation (it's structural, not content data)
+  const categoryData = pathGender && category
+    ? megaMenuCategories[pathGender]?.find((c) => c.slug === category)
+    : undefined;
+
+  const getCategoryName = (slug: string): string => {
+    for (const gender of ["women", "men"] as const) {
+      for (const cat of megaMenuCategories[gender]) {
+        if (cat.slug === slug) return cat.name;
+        const sub = cat.subcategories.find((s) => s.slug === slug);
+        if (sub) return sub.name;
+      }
+    }
+    return slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  };
+
   const breadcrumbs: { label: string; path: string }[] = [];
   if (pathGender) {
     breadcrumbs.push({ label: pathGender === "women" ? "Women" : "Men", path: `/${pathGender}` });
@@ -32,7 +48,6 @@ const GenderListing = () => {
     }
   }
 
-  // Page title
   const pageTitle = subcategory
     ? getCategoryName(subcategory)
     : category
@@ -43,16 +58,10 @@ const GenderListing = () => {
     ? "Men"
     : "Browse";
 
-  // Subcategories sidebar
-  const categoryData = pathGender && category
-    ? megaMenuCategories[pathGender]?.find((c) => c.slug === category)
-    : undefined;
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main>
-        {/* Breadcrumb */}
         <div className="px-6 py-4 lg:px-12">
           <nav className="flex items-center gap-1 font-body text-xs text-muted-foreground">
             <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
@@ -71,22 +80,19 @@ const GenderListing = () => {
           </nav>
         </div>
 
-        {/* Header */}
         <section className="px-6 pb-8 lg:px-12">
           <div className="mx-auto max-w-6xl">
             <h1 className="font-display text-3xl font-bold tracking-wide text-foreground uppercase lg:text-4xl">
               {pageTitle}
             </h1>
             <p className="font-body text-sm text-muted-foreground mt-2">
-              {products.length} curated {products.length === 1 ? "piece" : "pieces"}
+              {isLoading ? "Loading..." : `${(products || []).length} curated ${(products || []).length === 1 ? "piece" : "pieces"}`}
             </p>
           </div>
         </section>
 
-        {/* Content */}
         <section className="px-6 pb-20 lg:px-12">
           <div className="mx-auto max-w-6xl flex gap-10">
-            {/* Sidebar */}
             {categoryData && categoryData.subcategories.length > 0 && (
               <aside className="hidden w-48 shrink-0 lg:block">
                 <h3 className="font-body text-xs tracking-widest text-muted-foreground uppercase mb-4">
@@ -116,11 +122,20 @@ const GenderListing = () => {
               </aside>
             )}
 
-            {/* Product grid */}
             <div className="flex-1">
-              {products.length > 0 ? (
+              {isLoading ? (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                  {products.map((product) => (
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="aspect-[3/4] w-full mb-3" />
+                      <Skeleton className="h-3 w-20 mb-1" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                  ))}
+                </div>
+              ) : (products || []).length > 0 ? (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                  {(products || []).map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
