@@ -1,20 +1,12 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
-import brandStory1 from "@/assets/brand-story-1.jpg";
-import brandStory2 from "@/assets/brand-story-2.jpg";
-import brandStory3 from "@/assets/brand-story-3.jpg";
-import brandStory4 from "@/assets/brand-story-4.jpg";
-
-const brands = [
-  { id: "1", name: "BIYAN", image: brandStory1, slug: "biyan" },
-  { id: "2", name: "SEJAUH MATA MEMANDANG", image: brandStory2, slug: "sejauh-mata-memandang" },
-  { id: "3", name: "TULOLA", image: brandStory3, slug: "tulola" },
-  { id: "4", name: "AERO SPORT CLUB", image: brandStory4, slug: "aero-sport-club" },
-];
+import { useAllBrands } from "@/hooks/use-supabase-data";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const BrandStories = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { data: brands, isLoading } = useAllBrands();
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -33,7 +25,6 @@ export const BrandStories = () => {
         </h2>
 
         <div className="relative">
-          {/* Scroll buttons */}
           <button
             onClick={() => scroll("left")}
             className="absolute -left-3 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center bg-background/80 shadow-sm transition-colors hover:bg-secondary"
@@ -47,27 +38,25 @@ export const BrandStories = () => {
             <ChevronRight className="h-5 w-5 text-foreground" />
           </button>
 
-          <div
-            ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scrollbar-hide"
-          >
-            {brands.map((brand) => (
-              <Link
-                key={brand.id}
-                to={`/brands/${brand.slug}`}
-                className="group relative aspect-square w-[280px] flex-shrink-0 overflow-hidden sm:w-[300px]"
-              >
-                <img
-                  src={brand.image}
-                  alt={brand.name}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <p className="absolute bottom-4 left-4 font-body text-xs font-medium tracking-[0.15em] text-primary-foreground">
-                  {brand.name}
-                </p>
-              </Link>
-            ))}
+          <div ref={scrollRef} className="flex gap-5 overflow-x-auto scrollbar-hide">
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-square w-[280px] flex-shrink-0 sm:w-[300px]" />
+              ))
+            ) : (
+              (brands || []).map((brand) => (
+                <Link
+                  key={brand.id}
+                  to={`/brands/${brand.slug}`}
+                  className="group relative aspect-square w-[280px] flex-shrink-0 overflow-hidden sm:w-[300px] bg-secondary"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <p className="absolute bottom-4 left-4 font-body text-xs font-medium tracking-[0.15em] text-primary-foreground">
+                    {brand.name.toUpperCase()}
+                  </p>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </div>

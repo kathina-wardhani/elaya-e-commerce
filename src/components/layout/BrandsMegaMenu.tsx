@@ -1,21 +1,19 @@
 import { Link } from "react-router-dom";
-import { brands } from "@/data/mock";
+import { useAllBrands } from "@/hooks/use-supabase-data";
 
 interface BrandsMegaMenuProps {
   onClose: () => void;
 }
 
 export const BrandsMegaMenu = ({ onClose }: BrandsMegaMenuProps) => {
-  // Group brands by first letter, show max 4 per letter
+  const { data: brands } = useAllBrands();
+
   const grouped: Record<string, typeof brands> = {};
-  brands
-    .slice()
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .forEach((brand) => {
-      const letter = brand.name[0].toUpperCase();
-      if (!grouped[letter]) grouped[letter] = [];
-      grouped[letter].push(brand);
-    });
+  (brands || []).forEach((brand) => {
+    const letter = brand.name[0].toUpperCase();
+    if (!grouped[letter]) grouped[letter] = [];
+    grouped[letter]!.push(brand);
+  });
 
   const letters = Object.keys(grouped).sort();
 
@@ -27,7 +25,7 @@ export const BrandsMegaMenu = ({ onClose }: BrandsMegaMenuProps) => {
             <div key={letter}>
               <h3 className="font-display text-xl text-foreground mb-3">{letter}</h3>
               <div className="space-y-1.5">
-                {grouped[letter].slice(0, 4).map((brand) => (
+                {grouped[letter]!.slice(0, 4).map((brand) => (
                   <Link
                     key={brand.slug}
                     to={`/brands/${brand.slug}`}

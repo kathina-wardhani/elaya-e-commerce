@@ -11,7 +11,7 @@ const slides = [
     subtitle: "Discover handcrafted pieces from Indonesia's finest designers",
     cta: "EXPLORE NOW",
     image: hero1,
-    link: "/category/new",
+    link: "/women",
   },
   {
     id: "2",
@@ -19,7 +19,7 @@ const slides = [
     subtitle: "Behind the scenes of our latest collection",
     cta: "EXPLORE NOW",
     image: hero2,
-    link: "/category/featured",
+    link: "/women/ready-to-wear",
   },
 ];
 

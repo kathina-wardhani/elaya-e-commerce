@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { featuredProducts } from "@/data/mock";
+import { useProductsByGenderCategory } from "@/hooks/use-supabase-data";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CategorySectionProps {
   title: string;
@@ -9,13 +10,11 @@ interface CategorySectionProps {
 }
 
 export const CategorySection = ({ title, slug }: CategorySectionProps) => {
-  // In production, filter by category. Here use mock data.
-  const products = featuredProducts;
+  const { data: products, isLoading } = useProductsByGenderCategory("women", slug);
 
   return (
     <section className="py-12 lg:py-16">
       <div className="px-6 lg:px-12">
-        {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <h2 className="font-display text-2xl font-bold tracking-wide text-foreground uppercase sm:text-3xl">
             {title}
@@ -29,13 +28,24 @@ export const CategorySection = ({ title, slug }: CategorySectionProps) => {
           </Link>
         </div>
 
-        {/* Product scroll */}
         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-          {products.map((product) => (
-            <div key={product.id} className="w-[220px] flex-shrink-0">
-              <ProductCard product={product} />
-            </div>
-          ))}
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="w-[220px] flex-shrink-0">
+                <Skeleton className="aspect-[3/4] w-full mb-3" />
+                <Skeleton className="h-3 w-20 mb-1" />
+                <Skeleton className="h-4 w-32" />
+              </div>
+            ))
+          ) : (products || []).length > 0 ? (
+            (products || []).map((product) => (
+              <div key={product.id} className="w-[220px] flex-shrink-0">
+                <ProductCard product={product} />
+              </div>
+            ))
+          ) : (
+            <p className="font-body text-sm text-muted-foreground py-4">No products in this category yet.</p>
+          )}
         </div>
       </div>
     </section>

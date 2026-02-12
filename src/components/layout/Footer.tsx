@@ -1,35 +1,31 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Mail } from "lucide-react";
+import { subscribeEmail } from "@/hooks/use-supabase-data";
 
 export const Footer = () => {
   const [email, setEmail] = useState("");
   const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "success" | "duplicate" | "error" | "invalid">("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setSubscribeStatus("invalid");
       return;
     }
-    // Store in localStorage until Supabase is connected
-    const subscribers = JSON.parse(localStorage.getItem("elaya_subscribers") || "[]");
-    if (subscribers.includes(trimmed)) {
-      setSubscribeStatus("duplicate");
-      return;
-    }
-    subscribers.push(trimmed);
-    localStorage.setItem("elaya_subscribers", JSON.stringify(subscribers));
-    setSubscribeStatus("success");
-    setEmail("");
+    setIsSubmitting(true);
+    const result = await subscribeEmail(trimmed);
+    setSubscribeStatus(result);
+    if (result === "success") setEmail("");
+    setIsSubmitting(false);
   };
 
   return (
     <footer className="bg-footer text-footer-foreground">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-12">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand + Newsletter */}
           <div>
             <h3 className="font-display text-xl italic mb-3">ELAYA Curated</h3>
             <p className="font-body text-sm leading-relaxed opacity-70 mb-6">
@@ -43,8 +39,12 @@ export const Footer = () => {
                 onChange={(e) => { setEmail(e.target.value); setSubscribeStatus("idle"); }}
                 className="mb-3 w-full border border-footer-foreground/20 bg-transparent px-4 py-3 font-body text-sm text-footer-foreground placeholder:text-footer-foreground/40 outline-none"
               />
-              <button type="submit" className="w-full border border-footer-foreground/40 bg-transparent px-4 py-3 font-body text-xs font-medium tracking-widest text-footer-foreground transition-colors hover:bg-footer-foreground/10">
-                SUBSCRIBE
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full border border-footer-foreground/40 bg-transparent px-4 py-3 font-body text-xs font-medium tracking-widest text-footer-foreground transition-colors hover:bg-footer-foreground/10 disabled:opacity-50"
+              >
+                {isSubmitting ? "SUBSCRIBING..." : "SUBSCRIBE"}
               </button>
             </form>
             {subscribeStatus === "success" && (
@@ -56,9 +56,11 @@ export const Footer = () => {
             {subscribeStatus === "invalid" && (
               <p className="mt-2 font-body text-xs text-destructive">Please enter a valid email address.</p>
             )}
+            {subscribeStatus === "error" && (
+              <p className="mt-2 font-body text-xs text-destructive">Something went wrong. Please try again.</p>
+            )}
           </div>
 
-          {/* Discover */}
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Discover</h4>
             <div className="space-y-2 font-body text-sm opacity-70">
@@ -68,7 +70,6 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Information */}
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Information</h4>
             <div className="space-y-2 font-body text-sm opacity-70">
@@ -79,7 +80,6 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Get in Touch</h4>
             <div className="space-y-2 font-body text-sm opacity-70 mb-6">
@@ -100,7 +100,6 @@ export const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="border-t border-footer-foreground/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-4 text-xs font-body opacity-50 sm:flex-row lg:px-12">
           <p>COPYRIGHT © 2025 ELAYA CURATED. ALL RIGHTS RESERVED.</p>
