@@ -32,10 +32,10 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
               <Link
                 key={cat.name}
                 to={`/${gender}/${cat.slug}`}
-                className={`block font-body text-sm tracking-wider transition-colors hover:text-foreground ${
+                className={`block font-body text-sm tracking-wider transition-all duration-150 cursor-pointer ${
                   hoveredCategory === cat.name
-                    ? "bg-foreground text-background px-3 py-1 -mx-3"
-                    : "text-muted-foreground"
+                    ? "bg-[hsl(0,0%,0%)] text-[hsl(0,0%,100%)] font-medium px-3 py-1.5 -mx-3 rounded-sm"
+                    : "text-[hsl(0,0%,27%)] hover:bg-[hsl(0,0%,0%)] hover:text-[hsl(0,0%,100%)] hover:px-3 hover:py-1.5 hover:-mx-3 hover:rounded-sm"
                 }`}
                 onMouseEnter={() => setHoveredCategory(cat.name)}
                 onClick={onClose}
@@ -52,7 +52,7 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
                 <Link
                   key={sub.slug}
                   to={`/${gender}/${hovered.slug}/${sub.slug}`}
-                  className="block font-body text-sm text-muted-foreground tracking-wider hover:text-foreground transition-colors"
+                  className="block font-body text-sm text-[hsl(0,0%,27%)] tracking-wider hover:underline hover:text-foreground transition-colors duration-150 cursor-pointer"
                   onClick={onClose}
                 >
                   {sub.name.toUpperCase()}
