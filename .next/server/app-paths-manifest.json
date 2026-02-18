@@ -1,0 +1,9 @@
+{
+  "/page": "app/page.js",
+  "/women/page": "app/women/page.js",
+  "/men/[category]/[subcategory]/page": "app/men/[category]/[subcategory]/page.js",
+  "/men/[category]/page": "app/men/[category]/page.js",
+  "/category/[...slug]/page": "app/category/[...slug]/page.js",
+  "/collection/[slug]/page": "app/collection/[slug]/page.js",
+  "/women/[category]/page": "app/women/[category]/page.js"
+}

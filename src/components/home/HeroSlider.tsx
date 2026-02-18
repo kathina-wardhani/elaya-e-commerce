@@ -1,8 +1,8 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
 
 const slides = [
   {
@@ -10,7 +10,7 @@ const slides = [
     title: "End of Year Collection",
     subtitle: "Discover handcrafted pieces from Indonesia's finest designers",
     cta: "EXPLORE NOW",
-    image: hero1,
+    image: "/hero/hero-1.jpg",
     link: "/women",
   },
   {
@@ -18,7 +18,7 @@ const slides = [
     title: "Fashion Week Highlights",
     subtitle: "Behind the scenes of our latest collection",
     cta: "EXPLORE NOW",
-    image: hero2,
+    image: "/hero/hero-2.jpg",
     link: "/women/ready-to-wear",
   },
 ];
@@ -73,7 +73,7 @@ export const HeroSlider = () => {
 
           {/* CTA */}
           <Link
-            to={slide.link}
+            href={slide.link}
             className="hidden sm:flex items-center gap-2 bg-background px-8 py-4 font-body text-xs font-medium tracking-widest text-foreground transition-colors hover:bg-secondary"
           >
             {slide.cta}

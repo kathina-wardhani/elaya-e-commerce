@@ -1,0 +1,30 @@
+{
+  "node": {
+    "a0ad74f87cb2d192637705e0c13101f00d28f779": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/women/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/collection/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/brands/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/men/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/women/[category]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/men/[category]/[subcategory]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/category/[...slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!",
+        "app/men/[category]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fkathina%2Felaya-discover%2Fsrc%2Factions%2Fnewsletter.ts%22%2C%5B%22subscribeToNewsletter%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser",
+        "app/women/page": "action-browser",
+        "app/collection/[slug]/page": "action-browser",
+        "app/brands/page": "action-browser",
+        "app/men/page": "action-browser",
+        "app/women/[category]/page": "action-browser",
+        "app/men/[category]/[subcategory]/page": "action-browser",
+        "app/category/[...slug]/page": "action-browser",
+        "app/men/[category]/page": "action-browser"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "owsfEf5ddyz2dW0BwA6smvgxJ4gT1SnOJiNKgqgLaJQ="
+}

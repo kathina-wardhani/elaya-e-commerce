@@ -1,8 +1,8 @@
+"use client";
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { megaMenuCategories } from "@/data/mock";
-import megaMenuImageWomen from "@/assets/brand-story-2.jpg";
-import megaMenuImageMen from "@/assets/brand-story-3.jpg";
+import Link from "next/link";
+import { useCategoryTree } from "@/hooks/use-supabase-data";
 
 interface MegaMenuProps {
   gender: "women" | "men";
@@ -10,10 +10,10 @@ interface MegaMenuProps {
 }
 
 export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
-  const categories = megaMenuCategories[gender];
+  const { data: categories = [], isLoading } = useCategoryTree(gender);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const hovered = categories.find((c) => c.name === hoveredCategory);
-  const menuImage = gender === "women" ? megaMenuImageWomen : megaMenuImageMen;
+  const menuImage = gender === "women" ? "/brands/brand-story-2.jpg" : "/brands/brand-story-3.jpg";
 
   return (
     <div className="absolute left-0 right-0 z-40 border-b border-border bg-background shadow-sm">
@@ -28,10 +28,15 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
         {/* Categories column */}
         <div className="flex gap-16">
           <div className="space-y-3">
-            {categories.map((cat) => (
+            {isLoading ? (
+              <div className="font-body text-sm tracking-wider text-muted-foreground">Loading...</div>
+            ) : categories.length === 0 ? (
+              <div className="font-body text-sm tracking-wider text-muted-foreground">No categories</div>
+            ) : (
+              categories.map((cat) => (
               <Link
                 key={cat.name}
-                to={`/${gender}/${cat.slug}`}
+                href={`/${gender}/${cat.slug}`}
                 className={`block font-body text-sm tracking-wider transition-all duration-150 cursor-pointer ${
                   hoveredCategory === cat.name
                     ? "bg-[hsl(0,0%,0%)] text-[hsl(0,0%,100%)] font-medium px-3 py-1.5 -mx-3 rounded-sm"
@@ -42,7 +47,8 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
               >
                 {cat.name}
               </Link>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Subcategories */}
@@ -51,7 +57,7 @@ export const MegaMenu = ({ gender, onClose }: MegaMenuProps) => {
               {hovered.subcategories.map((sub) => (
                 <Link
                   key={sub.slug}
-                  to={`/${gender}/${hovered.slug}/${sub.slug}`}
+                  href={`/${gender}/${hovered.slug}/${sub.slug}`}
                   className="block font-body text-sm text-[hsl(0,0%,27%)] tracking-wider hover:underline hover:text-foreground transition-colors duration-150 cursor-pointer"
                   onClick={onClose}
                 >

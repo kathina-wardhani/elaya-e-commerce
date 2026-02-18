@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
@@ -8,7 +10,7 @@ export const ShopByCategory = () => {
   const [gender, setGender] = useState<"women" | "men">("women");
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { data: products, isLoading } = useFeaturedProducts(16);
+  const { data: products, isLoading } = useFeaturedProducts(16, true);
 
   const filtered = (products || []).filter((p) => p.category?.gender === gender);
 
