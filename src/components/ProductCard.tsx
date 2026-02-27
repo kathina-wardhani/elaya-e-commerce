@@ -10,9 +10,10 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const imageUrl = product.images?.[0] || product.main_image || "https://m.media-amazon.com/images/I/513TSUbtW+L._AC_SX679_.jpg";
+  const productPathIdentifier = product.id;
 
   return (
-    <Link href={`/product/${product.slug}`} className="group block min-w-[200px] flex-shrink-0">
+    <Link href={`/product/${productPathIdentifier}`} className="group block min-w-[200px] flex-shrink-0">
       <div className="aspect-[3/4] overflow-hidden bg-card mb-3">
         <img
           src={imageUrl}

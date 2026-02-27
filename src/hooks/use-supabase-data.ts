@@ -279,23 +279,45 @@ export function useProductBySlug(slug: string | undefined) {
     queryKey: ["product", slug],
     enabled: !!slug,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
-        .eq("slug", slug!)
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) return null;
+      const normalizedIdentifier = decodeURIComponent(slug!).trim();
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(normalizedIdentifier);
+
+      let productRow: any | null = null;
+
+      if (isUuid) {
+        const { data: byIdRow, error: idError } = await supabase
+          .from("products")
+          .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
+          .eq("id", normalizedIdentifier)
+          .maybeSingle();
+
+        if (idError) throw idError;
+        productRow = byIdRow;
+      }
+
+      if (!productRow) {
+        const { data: slugMatches, error: slugError } = await supabase
+          .from("products")
+          .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
+          .ilike("slug", normalizedIdentifier)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (slugError) throw slugError;
+        productRow = slugMatches?.[0] ?? null;
+      }
+
+      if (!productRow) return null;
       // Fetch tags
       const { data: tagMap } = await supabase
         .from("product_tag_map")
         .select("tag_id, product_tags(name)")
-        .eq("product_id", data.id);
+        .eq("product_id", productRow.id);
       const tags = (tagMap || []).map((t: any) => t.product_tags?.name).filter(Boolean);
       return {
-        ...data,
-        brand: (data as any).brands,
-        category: (data as any).categories,
+        ...productRow,
+        brand: (productRow as any).brands,
+        category: (productRow as any).categories,
         tags,
       } as ProductWithBrand;
     },

@@ -55,7 +55,9 @@ export const BrandStories = () => {
                     href={`/brands/${brand.slug}`}
                     className="group relative aspect-square w-[280px] flex-shrink-0 overflow-hidden sm:w-[300px] bg-secondary"
                   >
-                    <img src={imageUrl} alt={brand.name} className="h-full w-full object-cover" />
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <img src={imageUrl} className="w-full h-48 object-contain" />
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <p className="absolute bottom-4 left-4 font-body text-xs font-medium tracking-[0.15em] text-primary-foreground">
                       {brand.name.toUpperCase()}

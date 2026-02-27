@@ -79,11 +79,11 @@ const BrandDetail = ({ slug }: BrandDetailProps) => {
 
         <section className="px-6 pb-12 lg:px-12">
           <div className="mx-auto max-w-4xl">
-            <div className="aspect-[3/2] overflow-hidden bg-secondary">
+            <div className="aspect-[21/9] overflow-hidden bg-white flex items-center justify-center border-y border-gray-100">
               <img
                 src={brand.main_image || fallbackImage}
                 alt={brand.name}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-4 lg:p-12"
               />
             </div>
           </div>
@@ -93,7 +93,7 @@ const BrandDetail = ({ slug }: BrandDetailProps) => {
           <section className="px-6 pb-12 lg:px-12">
             <div className="mx-auto max-w-2xl">
               <h2 className="font-display text-xl italic text-foreground mb-4">The Story</h2>
-              <p className="font-body text-sm leading-relaxed text-muted-foreground mb-6">
+              <p className="font-body text-sm leading-relaxed text-muted-foreground mb-6 whitespace-pre-wrap">
                 {brand.story}
               </p>
             </div>
