@@ -1,8 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/brands/[slug]/page": "app/brands/[slug]/page.js",
-  "/women/[category]/[subcategory]/page": "app/women/[category]/[subcategory]/page.js",
-  "/women/[category]/page": "app/women/[category]/page.js",
-  "/brands/page": "app/brands/page.js",
-  "/product/[slug]/page": "app/product/[slug]/page.js"
-}
