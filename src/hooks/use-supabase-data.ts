@@ -93,7 +93,7 @@ export function useFeaturedProducts(limit = 8, onlyFeatured = false) {
   return useQuery({
     queryKey: ["products", "featured", limit, onlyFeatured],
     queryFn: async () => {
-      let query = supabase
+      let query: any = supabase
         .from("products")
         .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
         .order("created_at", { ascending: false });
@@ -175,7 +175,7 @@ export function useProductsByGenderCategory(
       }
 
       // Step 2: Fetch products
-      let query = supabase
+      let query: any = supabase
         .from("products")
         .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
         .order("created_at", { ascending: false });
@@ -383,7 +383,7 @@ export function useAllCollections() {
   return useQuery({
     queryKey: ["collections", "all"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("collections")
         .select("*")
         .order("created_at", { ascending: true });
@@ -398,7 +398,7 @@ export function useCollectionBySlug(slug: string | undefined) {
     queryKey: ["collections", slug],
     enabled: !!slug,
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("collections")
         .select("*")
         .eq("slug", slug!)
@@ -415,7 +415,7 @@ export function useProductsByCollection(collectionId: string | undefined) {
     enabled: !!collectionId,
     queryFn: async () => {
       if (!collectionId) return [];
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("collection_product_map")
         .select(
           "product_id, products:products(*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id))"
@@ -507,7 +507,7 @@ export function useCategories(gender?: string) {
   return useQuery({
     queryKey: ["categories", gender],
     queryFn: async () => {
-      let query = supabase.from("categories").select("*").order("name");
+      let query: any = supabase.from("categories").select("*").order("name");
       if (gender) query = query.eq("gender", gender);
       const { data, error } = await query;
       if (error) throw error;

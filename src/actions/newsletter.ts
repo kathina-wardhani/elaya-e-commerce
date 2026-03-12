@@ -7,7 +7,7 @@ export async function subscribeToNewsletter(
   email: string
 ): Promise<"success" | "duplicate" | "error"> {
   try {
-    await prisma.subscriber.create({
+    await prisma.subscribers.create({
       data: { email },
     });
     return "success";
