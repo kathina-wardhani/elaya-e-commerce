@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/product/[slug]/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/product/[slug]/page.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -16,35 +16,35 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
     "/brands/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/brands/[slug]/page.js"
     ],
-    "/women/page": [
+    "/women/[category]/[subcategory]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/women/page.js"
+      "static/chunks/app/women/[category]/[subcategory]/page.js"
     ],
     "/women/[category]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/women/[category]/page.js"
     ],
+    "/collection/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/collection/[slug]/page.js"
+    ],
     "/brands/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/brands/page.js"
     ],
-    "/collection/[slug]/page": [
+    "/product/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/collection/[slug]/page.js"
+      "static/chunks/app/product/[slug]/page.js"
     ]
   }
 }
