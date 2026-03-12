@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -11,6 +13,13 @@ export interface ProductWithBrand {
   price_min: number | null;
   price_max: number | null;
   external_url: string;
+  images?: string[] | null;
+  main_image?: string | null;
+  gender?: string | null;
+  material?: string | null;
+  size_range?: string | null;
+  is_featured?: boolean | null;
+  updated_at?: string | null;
   brand_id: string | null;
   category_id: string | null;
   created_at: string | null;
@@ -37,6 +46,7 @@ export interface BrandRow {
   story: string | null;
   founded_year: number | null;
   location: string | null;
+  main_image: string | null;
   created_at: string | null;
 }
 
@@ -46,6 +56,24 @@ export interface CategoryRow {
   slug: string;
   gender: string;
   parent_id: string | null;
+  created_at: string | null;
+}
+
+export interface CategoryTreeItem {
+  id: string;
+  name: string;
+  slug: string;
+  subcategories: { id: string; name: string; slug: string }[];
+}
+
+export interface CollectionRow {
+  id: string;
+  name: string;
+  slug: string;
+  tag: string | null;
+  description: string | null;
+  image: string | null;
+  button_text: string | null;
   created_at: string | null;
 }
 
@@ -61,15 +89,18 @@ export function formatPrice(min: number | null, max: number | null): string {
 
 // ============= Hooks =============
 
-export function useFeaturedProducts(limit = 8) {
+export function useFeaturedProducts(limit = 8, onlyFeatured = false) {
   return useQuery({
-    queryKey: ["products", "featured", limit],
+    queryKey: ["products", "featured", limit, onlyFeatured],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("products")
         .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
-        .order("created_at", { ascending: false })
-        .limit(limit);
+        .order("created_at", { ascending: false });
+      if (onlyFeatured) {
+        query = query.eq("is_featured", true);
+      }
+      const { data, error } = await query.limit(limit);
       if (error) throw error;
       return (data || []).map((p: any) => ({
         ...p,
@@ -164,28 +195,129 @@ export function useProductsByGenderCategory(
   });
 }
 
+export function useProductsByCategory(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["products", "category", slug],
+    enabled: !!slug,
+    queryFn: async () => {
+      // Find all categories with this slug (both men and women)
+      const { data: cats } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", slug!);
+
+      if (!cats || cats.length === 0) return [];
+
+      const categoryIds = cats.map((c) => c.id);
+
+      // Fetch products from all categories with this slug
+      const { data, error } = await supabase
+        .from("products")
+        .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
+        .in("category_id", categoryIds)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return (data || []).map((p: any) => ({
+        ...p,
+        brand: p.brands,
+        category: p.categories,
+      })) as ProductWithBrand[];
+    },
+  });
+}
+
+export function useCategoryTree(gender?: string) {
+  return useQuery({
+    queryKey: ["categories", "tree", gender],
+    enabled: !!gender,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .eq("gender", gender!)
+        .order("name", { ascending: true });
+      if (error) throw error;
+      const rows = (data || []) as CategoryRow[];
+      const byParent: Record<string, CategoryRow[]> = {};
+      rows.forEach((row) => {
+        const key = row.parent_id || "root";
+        if (!byParent[key]) byParent[key] = [];
+        byParent[key]!.push(row);
+      });
+      const top = byParent["root"] || [];
+      return top.map((parent) => ({
+        id: parent.id,
+        name: parent.name,
+        slug: parent.slug,
+        subcategories: (byParent[parent.id] || []).map((child) => ({
+          id: child.id,
+          name: child.name,
+          slug: child.slug,
+        })),
+      })) as CategoryTreeItem[];
+    },
+  });
+}
+
+export function useAllCategories() {
+  return useQuery({
+    queryKey: ["categories", "all"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name", { ascending: true });
+      if (error) throw error;
+      return (data || []) as CategoryRow[];
+    },
+  });
+}
+
 export function useProductBySlug(slug: string | undefined) {
   return useQuery({
     queryKey: ["product", slug],
     enabled: !!slug,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
-        .eq("slug", slug!)
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) return null;
+      const normalizedIdentifier = decodeURIComponent(slug!).trim();
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(normalizedIdentifier);
+
+      let productRow: any | null = null;
+
+      if (isUuid) {
+        const { data: byIdRow, error: idError } = await supabase
+          .from("products")
+          .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
+          .eq("id", normalizedIdentifier)
+          .maybeSingle();
+
+        if (idError) throw idError;
+        productRow = byIdRow;
+      }
+
+      if (!productRow) {
+        const { data: slugMatches, error: slugError } = await supabase
+          .from("products")
+          .select("*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id)")
+          .ilike("slug", normalizedIdentifier)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (slugError) throw slugError;
+        productRow = slugMatches?.[0] ?? null;
+      }
+
+      if (!productRow) return null;
       // Fetch tags
       const { data: tagMap } = await supabase
         .from("product_tag_map")
         .select("tag_id, product_tags(name)")
-        .eq("product_id", data.id);
+        .eq("product_id", productRow.id);
       const tags = (tagMap || []).map((t: any) => t.product_tags?.name).filter(Boolean);
       return {
-        ...data,
-        brand: (data as any).brands,
-        category: (data as any).categories,
+        ...productRow,
+        brand: (productRow as any).brands,
+        category: (productRow as any).categories,
         tags,
       } as ProductWithBrand;
     },
@@ -243,6 +375,58 @@ export function useAllBrands() {
         .order("name", { ascending: true });
       if (error) throw error;
       return (data || []) as BrandRow[];
+    },
+  });
+}
+
+export function useAllCollections() {
+  return useQuery({
+    queryKey: ["collections", "all"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("collections")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data || []) as CollectionRow[];
+    },
+  });
+}
+
+export function useCollectionBySlug(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["collections", slug],
+    enabled: !!slug,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("collections")
+        .select("*")
+        .eq("slug", slug!)
+        .maybeSingle();
+      if (error) throw error;
+      return data as CollectionRow | null;
+    },
+  });
+}
+
+export function useProductsByCollection(collectionId: string | undefined) {
+  return useQuery({
+    queryKey: ["collections", collectionId, "products"],
+    enabled: !!collectionId,
+    queryFn: async () => {
+      if (!collectionId) return [];
+      const { data, error } = await supabase
+        .from("collection_product_map")
+        .select(
+          "product_id, products:products(*, brands!products_brand_id_fkey(id, name, slug), categories!products_category_id_fkey(id, name, slug, gender, parent_id))"
+        )
+        .eq("collection_id", collectionId);
+      if (error) throw error;
+      return (data || []).map((row: any) => ({
+        ...row.products,
+        brand: row.products?.brands,
+        category: row.products?.categories,
+      })) as ProductWithBrand[];
     },
   });
 }

@@ -1,5 +1,8 @@
+"use client";
+
 import { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { MegaMenu } from "./MegaMenu";
 import { BrandsMegaMenu } from "./BrandsMegaMenu";
@@ -13,7 +16,7 @@ const navItems = [
 export const Header = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
+  const router = useRouter();
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = (key: string) => {
@@ -32,7 +35,7 @@ export const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
     }
   };
@@ -41,7 +44,7 @@ export const Header = () => {
     <header className="sticky top-0 z-50 bg-background">
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-4 lg:px-12">
-        <Link to="/" className="font-display text-2xl italic font-medium tracking-tight text-foreground">
+        <Link href="/" className="font-display text-2xl italic font-medium tracking-tight text-foreground">
           ELAYA Curated
         </Link>
         <form onSubmit={handleSearch} className="flex items-center">
@@ -70,7 +73,7 @@ export const Header = () => {
               onMouseLeave={handleMouseLeave}
             >
               <Link
-                to={item.path}
+                href={item.path}
                 className={`font-body text-sm font-medium tracking-widest transition-colors hover:text-foreground ${
                   activeMenu === item.key ? "text-foreground font-semibold" : "text-muted-foreground"
                 }`}

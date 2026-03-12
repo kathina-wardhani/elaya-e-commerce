@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js build output
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Environment variables (Crucial for Supabase security!)
+.env
+.env.local
+.env.production
+
+# Testing
+coverage/
+
+# Misc
+.DS_Store
+*.log

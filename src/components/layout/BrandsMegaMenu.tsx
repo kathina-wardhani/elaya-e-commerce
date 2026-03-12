@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import { useAllBrands } from "@/hooks/use-supabase-data";
 
 interface BrandsMegaMenuProps {
@@ -28,7 +30,7 @@ export const BrandsMegaMenu = ({ onClose }: BrandsMegaMenuProps) => {
                 {grouped[letter]!.slice(0, 4).map((brand) => (
                   <Link
                     key={brand.slug}
-                    to={`/brands/${brand.slug}`}
+                    href={`/brands/${brand.slug}`}
                     className="block font-body text-xs tracking-wider text-muted-foreground hover:text-foreground transition-colors uppercase"
                     onClick={onClose}
                   >
@@ -41,7 +43,7 @@ export const BrandsMegaMenu = ({ onClose }: BrandsMegaMenuProps) => {
         </div>
         <div className="mt-6 pt-4 border-t border-border">
           <Link
-            to="/brands"
+            href="/brands"
             className="font-body text-sm tracking-wider text-primary hover:opacity-80 transition-opacity"
             onClick={onClose}
           >

@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import type { ProductWithBrand } from "@/hooks/use-supabase-data";
 import { formatPrice } from "@/hooks/use-supabase-data";
 
@@ -7,12 +9,17 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const imageUrl = product.images?.[0] || product.main_image || "https://m.media-amazon.com/images/I/513TSUbtW+L._AC_SX679_.jpg";
+  const productPathIdentifier = product.id;
+
   return (
-    <Link to={`/product/${product.slug}`} className="group block min-w-[200px] flex-shrink-0">
+    <Link href={`/product/${productPathIdentifier}`} className="group block min-w-[200px] flex-shrink-0">
       <div className="aspect-[3/4] overflow-hidden bg-card mb-3">
-        <div className="flex h-full w-full items-center justify-center bg-secondary">
-          <span className="font-body text-xs text-muted-foreground tracking-wider">IMAGE</span>
-        </div>
+        <img
+          src={imageUrl}
+          alt={product.name}
+          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
       </div>
       <p className="font-body text-[10px] tracking-widest text-muted-foreground uppercase mb-1">
         {product.brand?.name || "Unknown Brand"}

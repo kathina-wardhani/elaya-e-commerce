@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { useProductsByGenderCategory } from "@/hooks/use-supabase-data";
+import { useProductsByCategory } from "@/hooks/use-supabase-data";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface CategorySectionProps {
@@ -10,7 +12,7 @@ interface CategorySectionProps {
 }
 
 export const CategorySection = ({ title, slug }: CategorySectionProps) => {
-  const { data: products, isLoading } = useProductsByGenderCategory("women", slug);
+  const { data: products, isLoading } = useProductsByCategory(slug);
 
   return (
     <section className="py-12 lg:py-16">
@@ -20,7 +22,7 @@ export const CategorySection = ({ title, slug }: CategorySectionProps) => {
             {title}
           </h2>
           <Link
-            to={`/women/${slug}`}
+            href={`/category/${slug}`}
             className="flex items-center gap-1 bg-primary px-5 py-2.5 font-body text-xs font-medium tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
           >
             View All

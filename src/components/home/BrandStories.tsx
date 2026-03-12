@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import { useAllBrands } from "@/hooks/use-supabase-data";
@@ -7,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const BrandStories = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: brands, isLoading } = useAllBrands();
+  const fallbackImage = "https://m.media-amazon.com/images/I/513TSUbtW+L._AC_SX679_.jpg";
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -44,18 +47,24 @@ export const BrandStories = () => {
                 <Skeleton key={i} className="aspect-square w-[280px] flex-shrink-0 sm:w-[300px]" />
               ))
             ) : (
-              (brands || []).map((brand) => (
-                <Link
-                  key={brand.id}
-                  to={`/brands/${brand.slug}`}
-                  className="group relative aspect-square w-[280px] flex-shrink-0 overflow-hidden sm:w-[300px] bg-secondary"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <p className="absolute bottom-4 left-4 font-body text-xs font-medium tracking-[0.15em] text-primary-foreground">
-                    {brand.name.toUpperCase()}
-                  </p>
-                </Link>
-              ))
+              (brands || []).map((brand) => {
+                const imageUrl = brand.main_image || fallbackImage;
+                return (
+                  <Link
+                    key={brand.id}
+                    href={`/brands/${brand.slug}`}
+                    className="group relative aspect-square w-[280px] flex-shrink-0 overflow-hidden sm:w-[300px] bg-secondary"
+                  >
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <img src={imageUrl} className="w-full h-48 object-contain" />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <p className="absolute bottom-4 left-4 font-body text-xs font-medium tracking-[0.15em] text-primary-foreground">
+                      {brand.name.toUpperCase()}
+                    </p>
+                  </Link>
+                );
+              })
             )}
           </div>
         </div>

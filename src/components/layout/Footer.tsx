@@ -1,7 +1,9 @@
+"use client";
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Instagram, Facebook, Mail } from "lucide-react";
-import { subscribeEmail } from "@/hooks/use-supabase-data";
+import { subscribeToNewsletter } from "@/actions/newsletter";
 
 export const Footer = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +18,7 @@ export const Footer = () => {
       return;
     }
     setIsSubmitting(true);
-    const result = await subscribeEmail(trimmed);
+    const result = await subscribeToNewsletter(trimmed);
     setSubscribeStatus(result);
     if (result === "success") setEmail("");
     setIsSubmitting(false);
@@ -64,19 +66,19 @@ export const Footer = () => {
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Discover</h4>
             <div className="space-y-2 font-body text-sm opacity-70">
-              <Link to="/women" className="block hover:opacity-100 transition-opacity">Women</Link>
-              <Link to="/men" className="block hover:opacity-100 transition-opacity">Men</Link>
-              <Link to="/brands" className="block hover:opacity-100 transition-opacity">All Brands</Link>
+              <Link href="/women" className="block hover:opacity-100 transition-opacity">Women</Link>
+              <Link href="/men" className="block hover:opacity-100 transition-opacity">Men</Link>
+              <Link href="/brands" className="block hover:opacity-100 transition-opacity">All Brands</Link>
             </div>
           </div>
 
           <div>
             <h4 className="font-body text-xs font-semibold tracking-widest mb-4 uppercase">Information</h4>
             <div className="space-y-2 font-body text-sm opacity-70">
-              <Link to="/our-story" className="block hover:opacity-100 transition-opacity">Our Story</Link>
-              <Link to="/our-mission" className="block hover:opacity-100 transition-opacity">Our Mission</Link>
-              <Link to="/terms" className="block hover:opacity-100 transition-opacity">Terms of Service</Link>
-              <Link to="/privacy" className="block hover:opacity-100 transition-opacity">Privacy Policy</Link>
+              <Link href="/our-story" className="block hover:opacity-100 transition-opacity">Our Story</Link>
+              <Link href="/our-mission" className="block hover:opacity-100 transition-opacity">Our Mission</Link>
+              <Link href="/terms" className="block hover:opacity-100 transition-opacity">Terms of Service</Link>
+              <Link href="/privacy" className="block hover:opacity-100 transition-opacity">Privacy Policy</Link>
             </div>
           </div>
 
